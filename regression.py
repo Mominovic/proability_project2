@@ -1,13 +1,3 @@
-"""
-regression.py
-=============
-Constructs the demand function using the Least Squares Method (OLS).
-Calculates: slope (b1), intercept (b0), R², correlation coefficient (r),
-standard deviations, and covariance.
-
-Demand model: D(p) = b0 + b1 * p
-"""
-
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'data'))
@@ -24,38 +14,36 @@ def compute_regression():
     prices, demand = get_survey_data()
     n = len(prices)
 
-    x = prices       # independent variable: price
-    y = demand       # dependent variable: demand quantity
+    x = prices      
+    y = demand      
 
-    # --- Step 1: Means ---
+
     x_bar = sum(x) / n
     y_bar = sum(y) / n
 
-    # --- Step 2: Products and squares ---
+   
     xy_bar = sum(xi * yi for xi, yi in zip(x, y)) / n
     x2_bar = sum(xi ** 2 for xi in x) / n
     y2_bar = sum(yi ** 2 for yi in y) / n
 
-    # --- Step 3: Variances and standard deviations ---
+  
     var_x = x2_bar - x_bar ** 2
     var_y = y2_bar - y_bar ** 2
     sigma_x = math.sqrt(var_x)
     sigma_y = math.sqrt(var_y)
 
-    # --- Step 4: Covariance ---
+  
     cov_xy = xy_bar - x_bar * y_bar
 
-    # --- Step 5: Regression coefficients ---
-    b1 = cov_xy / var_x          # slope
-    b0 = y_bar - b1 * x_bar      # intercept
+ 
+    b1 = cov_xy / var_x        
+    b0 = y_bar - b1 * x_bar      
 
-    # --- Step 6: Correlation coefficient ---
     r = cov_xy / (sigma_x * sigma_y)
 
-    # --- Step 7: Coefficient of determination ---
+  
     R2 = r ** 2
 
-    # --- Step 8: Predicted values & residuals ---
     y_pred = [b0 + b1 * xi for xi in x]
     residuals = [yi - yp for yi, yp in zip(y, y_pred)]
     ss_res = sum(e ** 2 for e in residuals)
@@ -94,7 +82,7 @@ def print_regression_report():
     print("          HelioFold Powerbank Demand Function")
     print("=" * 65)
 
-    # Computation table
+   
     print(f"\n{'i':>4} {'Price(x)':>10} {'Demand(y)':>12} {'x²':>10} {'xy':>12} {'ŷ':>10} {'e=y-ŷ':>10}")
     print("-" * 70)
     for i, (xi, yi, yp, e) in enumerate(

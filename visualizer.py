@@ -1,15 +1,3 @@
-"""
-visualizer.py
-=============
-Generates professional publication-ready charts for the HelioFold
-demand analysis. Saves PNG files to the output/ directory.
-
-Charts produced:
-  1. demand_curve.png        – Scatter + regression line with R²
-  2. revenue_profit.png      – Revenue & profit vs price (bar + line)
-  3. sensitivity_heatmap.png – Optimal quantity by cost (heatmap style)
-"""
-
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'data'))
@@ -28,7 +16,6 @@ import numpy as np
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), '..', 'output')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# ─── Brand palette ───────────────────────────────────────────────
 GOLD    = "#F5A623"
 NAVY    = "#1A2B4A"
 TEAL    = "#00B4B1"
@@ -48,10 +35,6 @@ plt.rcParams.update({
     "grid.linestyle":    "--",
 })
 
-
-# ══════════════════════════════════════════════════════════════════
-# Chart 1 – Demand Curve + Regression Line
-# ══════════════════════════════════════════════════════════════════
 def plot_demand_curve():
     res = compute_regression()
     prices = res["prices"]
@@ -63,24 +46,22 @@ def plot_demand_curve():
 
     fig, ax = plt.subplots(figsize=(9, 6))
 
-    # Regression line
+ 
     ax.plot(x_line, y_line, color=NAVY, linewidth=2.2, zorder=2,
             label=f"D(p) = {b0:.2f} − {abs(b1):.4f}·p")
 
-    # Actual data points
+  
     ax.scatter(prices, demand, color=GOLD, s=120, zorder=5,
                edgecolors=NAVY, linewidths=1.2, label="Survey data points")
 
-    # Predicted points
+  
     ax.scatter(prices, res["y_pred"], color=TEAL, s=60, zorder=4,
                marker="D", label="Predicted values")
 
-    # Residual lines
     for xi, yi, yp in zip(prices, demand, res["y_pred"]):
         ax.plot([xi, xi], [yi, yp], color=RED, linewidth=0.8,
                 linestyle=":", alpha=0.7)
 
-    # Annotation box
     ax.text(0.97, 0.95,
             f"D(p) = {b0:.2f} − {abs(b1):.4f}·p\nR² = {R2:.4f}",
             transform=ax.transAxes, ha="right", va="top",
@@ -103,9 +84,6 @@ def plot_demand_curve():
     print(f"  ✔ Saved: {path}")
 
 
-# ══════════════════════════════════════════════════════════════════
-# Chart 2 – Revenue & Profit vs Price
-# ══════════════════════════════════════════════════════════════════
 def plot_revenue_profit():
     table = compute_revenue_table(PRODUCTION_COST)
     prices    = [r["price"]        for r in table]
@@ -125,7 +103,7 @@ def plot_revenue_profit():
     bars_p = ax.bar(x + width/2, profits, width, label="Total Profit ($)",
                     color=GOLD, alpha=0.85, edgecolor="white", linewidth=0.6)
 
-    # Highlight optimal bars
+  
     for i, price in enumerate(prices):
         if price == max_profit_price:
             bars_p[i].set_edgecolor(RED)
@@ -138,7 +116,7 @@ def plot_revenue_profit():
             bars_r[i].set_edgecolor(NAVY)
             bars_r[i].set_linewidth(2.5)
 
-    # Value labels on bars
+   
     for bar in bars_r:
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 1.5,
                 f"${bar.get_height():.0f}", ha="center", va="bottom",
@@ -164,9 +142,7 @@ def plot_revenue_profit():
     print(f"  ✔ Saved: {path}")
 
 
-# ══════════════════════════════════════════════════════════════════
-# Chart 3 – Sensitivity: Optimal Quantity & Price vs Cost
-# ══════════════════════════════════════════════════════════════════
+
 def plot_sensitivity():
     sens = sensitivity_analysis()
     costs  = [r["cost"]             for r in sens]

@@ -1,21 +1,3 @@
-"""
-main.py
-=======
-HelioFold Powerbank – Demand Analysis
-======================================
-Entry point. Runs the full analysis pipeline:
-  1. Displays survey data table
-  2. Computes and prints OLS regression results
-  3. Computes and prints revenue / profit analysis
-  4. Generates all charts → output/
-
-Usage:
-    python main.py
-
-Requirements:
-    pip install numpy matplotlib scipy
-"""
-
 import sys
 import os
 
@@ -31,7 +13,6 @@ from visualizer    import generate_all
 
 
 def run():
-    print("\n" + "█" * 65)
     print("  HelioFold Powerbank – Full Demand Analysis")
     print("  Constructed from Telegram poll  (n = 85 respondents)")
     print("█" * 65)
